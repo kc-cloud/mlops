@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure MLOps Pipeline for LLM Fine-Tuning</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    <style>
+        .reveal {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        .reveal h1 {
+            font-size: 2.5em;
+            color: #61dafb;
+            text-transform: none;
+        }
+        .reveal h2 {
+            font-size: 1.8em;
+            color: #61dafb;
+            text-transform: none;
+        }
+        .reveal h3 {
+            font-size: 1.3em;
+            color: #ffd700;
+            text-transform: none;
+        }
+        .reveal pre {
+            width: 100%;
+            font-size: 0.5em;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        .reveal code {
+            font-family: 'Courier New', monospace;
+        }
+        .reveal ul {
+            font-size: 0.85em;
+        }
+        .reveal li {
+            margin: 0.3em 0;
+        }
+        .reveal .architecture-box {
+            background: #1e1e1e;
+            border: 2px solid #61dafb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 0.7em;
+            text-align: left;
+        }
+        .reveal table {
+            font-size: 0.7em;
+            margin: 20px auto;
+        }
+        .reveal table th {
+            background: #61dafb;
+            color: #000;
+        }
+        .reveal .check {
+            color: #00ff00;
+        }
+        .reveal .highlight-box {
+            background: rgba(97, 218, 251, 0.1);
+            border-left: 4px solid #61dafb;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .reveal .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .reveal .small-text {
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Title Slide -->
+            <section>
+                <h1>Secure MLOps Pipeline for LLM Fine-Tuning</h1>
+                <h3>Security Engineering & Operations in Production ML</h3>
+            </section>
+
+            <!-- Agenda -->
+            <section>
+                <h2>Agenda</h2>
+                <ol>
+                    <li>Introduction & Objectives</li>
+                    <li>Architecture Overview</li>
+                    <li>Security Controls by Layer</li>
+                    <li>Pipeline Workflow</li>
+                    <li>Demo & Implementation</li>
+                    <li>Compliance & Governance</li>
+                    <li>Monitoring & Observability</li>
+                    <li>Best Practices & Lessons Learned</li>
+                    <li>Q&A</li>
+                </ol>
+            </section>
+
+            <!-- 1. Introduction & Objectives -->
+            <section>
+                <section>
+                    <h2>1. Introduction & Objectives</h2>
+                </section>
+
+                <section>
+                    <h3>Project Goal</h3>
+                    <p>Demonstrate a <strong>production-grade secure MLOps pipeline</strong> for LLM fine-tuning with comprehensive security controls at every stage.</p>
+                </section>
+
+                <section>
+                    <h3>Key Objectives</h3>
+                    <ul>
+                        <li><strong>Security First</strong>: Implement defense-in-depth across all pipeline stages</li>
+                        <li><strong>Compliance</strong>: Meet industry standards (SOC2, HIPAA-ready, PCI-DSS)</li>
+                        <li><strong>Automation</strong>: Reduce manual security checks through automation</li>
+                        <li><strong>Observability</strong>: Complete audit trail and monitoring</li>
+                        <li><strong>Governance</strong>: Model approval workflows and version control</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- 2. Architecture Overview -->
+            <section>
+                <section>
+                    <h2>2. Architecture Overview</h2>
+                </section>
+
+                <section>
+                    <h3>High-Level Architecture</h3>
+                    <div class="architecture-box">
+┌─────────────────────────────────────────────────────────┐
+│              SECURE MLOPS PIPELINE                      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  1. Model Source    →  HuggingFace (Secure Token Auth) │
+│                                                         │
+│  2. Container       →  AWS ECR (Vuln Scanning +        │
+│     Registry           Encryption)                      │
+│                                                         │
+│  3. Training        →  SageMaker (VPC + KMS + IAM)     │
+│                                                         │
+│  4. Evaluation      →  Automated Threshold Validation   │
+│                                                         │
+│  5. Model Registry  →  SageMaker Registry (Approval)   │
+│                                                         │
+│  6. Deployment      →  Secure Endpoint (Monitoring)    │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Technology Stack</h3>
+                    <ul>
+                        <li><strong>Cloud Platform</strong>: AWS (SageMaker, ECR, S3, KMS, VPC)</li>
+                        <li><strong>ML Framework</strong>: PyTorch, Transformers, PEFT (LoRA)</li>
+                        <li><strong>Security Tools</strong>: AWS KMS, Secrets Manager, Inspector, GuardDuty</li>
+                        <li><strong>Monitoring</strong>: CloudWatch, SageMaker Model Monitor</li>
+                        <li><strong>IaC</strong>: CloudFormation</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- 3. Security Controls by Layer -->
+            <section>
+                <section>
+                    <h2>3. Security Controls by Layer</h2>
+                    <p>Defense-in-depth approach with 6 layers</p>
+                </section>
+
+                <!-- Layer 1: Model Acquisition -->
+                <section>
+                    <h3>Layer 1: Model Acquisition Security</h3>
+                    <div class="highlight-box">
+                        <strong>Threat</strong>: Malicious model injection, supply chain attacks
+                    </div>
+                    <ul class="small-text">
+                        <li class="check">✅ Token-based authentication via AWS Secrets Manager</li>
+                        <li class="check">✅ Model integrity verification (checksums)</li>
+                        <li class="check">✅ Audit logging to CloudWatch</li>
+                        <li class="check">✅ No trust of remote code execution</li>
+                        <li class="check">✅ Secure download over HTTPS only</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Layer 1: Code Example</h3>
+                    <pre><code class="python" data-trim>
+# Secure token retrieval from Secrets Manager
+secrets_client = boto3.client('secretsmanager')
+response = secrets_client.get_secret_value(
+    SecretId='huggingface/api-token'
+)
+token = response['SecretString']
+
+# Download with verification
+model_path = snapshot_download(
+    repo_id=model_id,
+    token=token,
+    local_dir_use_symlinks=False  # Prevent symlink attacks
+)
+                    </code></pre>
+                </section>
+
+                <!-- Layer 2: Container Security -->
+                <section>
+                    <h3>Layer 2: Container Security</h3>
+                    <div class="highlight-box">
+                        <strong>Threat</strong>: Vulnerable dependencies, container escape
+                    </div>
+                    <ul class="small-text">
+                        <li class="check">✅ AWS ECR with vulnerability scanning (basic + enhanced)</li>
+                        <li class="check">✅ Immutable image tags</li>
+                        <li class="check">✅ KMS encryption at rest</li>
+                        <li class="check">✅ Non-root container execution</li>
+                        <li class="check">✅ Minimal attack surface (slim base image)</li>
+                        <li class="check">✅ Regular automated scanning</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Layer 2: Dockerfile Hardening</h3>
+                    <pre><code class="dockerfile" data-trim>
+# Use AWS-maintained base image (regularly patched)
+FROM 763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-training:2.1.0-gpu-py310
+
+# Run as non-root user
+RUN groupadd -g 1000 mlopsuser && \
+    useradd -m -u 1000 -g mlopsuser mlopsuser
+USER mlopsuser
+
+# Read-only root filesystem where possible
+# Drop unnecessary capabilities
+                    </code></pre>
+                </section>
+
+                <!-- Layer 3: Training Security -->
+                <section>
+                    <h3>Layer 3: Training Security</h3>
+                    <div class="highlight-box">
+                        <strong>Threat</strong>: Data exfiltration, unauthorized access, model poisoning
+                    </div>
+                    <ul class="small-text">
+                        <li class="check">✅ VPC isolation (optional)</li>
+                        <li class="check">✅ Private subnets with no internet access</li>
+                        <li class="check">✅ VPC endpoints for AWS services</li>
+                        <li class="check">✅ Encrypted inter-container traffic</li>
+                        <li class="check">✅ KMS encryption for training data, model artifacts, EBS volumes</li>
+                        <li class="check">✅ IAM least-privilege roles</li>
+                        <li class="check">✅ Network isolation mode</li>
+                    </ul>
+                </section>
+
+                <!-- Layer 4: Data Security -->
+                <section>
+                    <h3>Layer 4: Data Security</h3>
+                    <div class="highlight-box">
+                        <strong>Threat</strong>: Data breach, unauthorized access, compliance violations
+                    </div>
+                    <ul class="small-text">
+                        <li class="check">✅ S3 bucket encryption (KMS)</li>
+                        <li class="check">✅ Bucket versioning enabled</li>
+                        <li class="check">✅ Public access blocked</li>
+                        <li class="check">✅ Lifecycle policies for data retention</li>
+                        <li class="check">✅ Access logging</li>
+                        <li class="check">✅ MFA delete protection</li>
+                    </ul>
+                </section>
+
+                <!-- Layer 5: Model Governance -->
+                <section>
+                    <h3>Layer 5: Model Governance</h3>
+                    <div class="highlight-box">
+                        <strong>Threat</strong>: Unauthorized model deployment, model drift
+                    </div>
+                    <ul class="small-text">
+                        <li class="check">✅ Automated performance threshold validation</li>
+                        <li class="check">✅ Model versioning in SageMaker Registry</li>
+                        <li class="check">✅ Approval workflow (manual/automated)</li>
+                        <li class="check">✅ Model lineage tracking</li>
+                        <li class="check">✅ Model cards for documentation</li>
+                        <li class="check">✅ Experiment tracking</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Layer 5: Quality Gates</h3>
+                    <pre><code class="python" data-trim>
+thresholds = {
+    'perplexity_max': 20.0,    # Industry best practice
+    'eval_loss_max': 1.5,       # Model quality threshold
+}
+
+# Automatic rejection if thresholds not met
+if not check_thresholds(metrics, thresholds):
+    approval_status = 'Rejected'
+    raise ValueError('Model does not meet performance requirements')
+                    </code></pre>
+                </section>
+
+                <!-- Layer 6: Deployment Security -->
+                <section>
+                    <h3>Layer 6: Deployment Security</h3>
+                    <div class="highlight-box">
+                        <strong>Threat</strong>: Unauthorized access, data leakage, model serving attacks
+                    </div>
+                    <ul class="small-text">
+                        <li class="check">✅ VPC endpoint deployment</li>
+                        <li class="check">✅ Data capture for monitoring</li>
+                        <li class="check">✅ Auto-scaling with security</li>
+                        <li class="check">✅ HTTPS-only endpoints</li>
+                        <li class="check">✅ IAM-based access control</li>
+                        <li class="check">✅ Request/response encryption</li>
+                        <li class="check">✅ Rate limiting</li>
+                        <li class="check">✅ Model monitoring (drift, bias, quality)</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- 4. Pipeline Workflow -->
+            <section>
+                <section>
+                    <h2>4. Pipeline Workflow</h2>
+                    <h3>End-to-End Secure Pipeline</h3>
+                </section>
+
+                <section>
+                    <h3>Steps 1-3</h3>
+                    <div class="small-text" style="text-align: left;">
+                        <p><strong>Step 1: Secure Model Download</strong></p>
+                        <ul>
+                            <li>Authenticate with AWS Secrets Manager</li>
+                            <li>Download from HuggingFace with token</li>
+                            <li>Verify model integrity</li>
+                            <li>Upload to encrypted S3</li>
+                        </ul>
+                        <p><strong>Step 2: Container Build & Scan</strong></p>
+                        <ul>
+                            <li>Build Docker image with security hardening</li>
+                            <li>Push to ECR with immutable tags</li>
+                            <li>Trigger vulnerability scan</li>
+                            <li>Block if critical vulnerabilities found</li>
+                        </ul>
+                        <p><strong>Step 3: Secure Training</strong></p>
+                        <ul>
+                            <li>Load encrypted data from S3</li>
+                            <li>Execute training in VPC (optional)</li>
+                            <li>Encrypt model artifacts with KMS</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Steps 4-7</h3>
+                    <div class="small-text" style="text-align: left;">
+                        <p><strong>Step 4: Automated Evaluation</strong></p>
+                        <ul>
+                            <li>Run evaluation metrics</li>
+                            <li>Check performance thresholds (Perplexity < 20, Eval Loss < 1.5)</li>
+                            <li>Approve/Reject based on metrics</li>
+                        </ul>
+                        <p><strong>Step 5: Model Registry</strong></p>
+                        <ul>
+                            <li>Register model version</li>
+                            <li>Attach metrics and metadata</li>
+                            <li>Track lineage</li>
+                        </ul>
+                        <p><strong>Step 6: Manual Review (optional)</strong></p>
+                        <ul>
+                            <li>Review metrics in SageMaker Studio</li>
+                            <li>Approve or reject deployment</li>
+                        </ul>
+                        <p><strong>Step 7: Secure Deployment</strong></p>
+                        <ul>
+                            <li>Deploy approved model only</li>
+                            <li>Configure monitoring and alarms</li>
+                        </ul>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 5. Demo & Implementation -->
+            <section>
+                <section>
+                    <h2>5. Demo & Implementation</h2>
+                </section>
+
+                <section>
+                    <h3>Prerequisites Setup</h3>
+                    <pre><code class="bash" data-trim>
+# 1. Deploy infrastructure
+aws cloudformation create-stack \
+  --stack-name secure-mlops-infra \
+  --template-body file://config/cloudformation_template.yaml \
+  --capabilities CAPABILITY_NAMED_IAM
+
+# 2. Store HuggingFace token in Secrets Manager
+aws secretsmanager create-secret \
+  --name huggingface/api-token \
+  --secret-string "hf_xxxxxxxxxxxxx"
+
+# 3. Install dependencies
+pip install -r requirements.txt
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Running the Pipeline</h3>
+                    <pre><code class="bash" data-trim>
+# Option 1: Run via Jupyter Notebook
+jupyter notebook notebooks/secure_mlops_pipeline.ipynb
+
+# Option 2: Run via Python scripts
+python src/model_management/secure_model_downloader.py
+bash scripts/build_and_push.sh
+python src/training/train.py --config config/training_config.yaml
+python src/deployment/deploy.py
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Performance Validation</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Good</th>
+                                <th>Excellent</th>
+                                <th>Our Threshold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Perplexity</td>
+                                <td>&lt; 20</td>
+                                <td>&lt; 10</td>
+                                <td>&lt; 20</td>
+                            </tr>
+                            <tr>
+                                <td>Eval Loss</td>
+                                <td>&lt; 1.5</td>
+                                <td>&lt; 1.0</td>
+                                <td>&lt; 1.5</td>
+                            </tr>
+                            <tr>
+                                <td>Training Time</td>
+                                <td>Optimized</td>
+                                <td>GPU Efficient</td>
+                                <td>Spot Instances</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </section>
+
+            <!-- 6. Compliance & Governance -->
+            <section>
+                <section>
+                    <h2>6. Compliance & Governance</h2>
+                </section>
+
+                <section>
+                    <h3>Regulatory Compliance</h3>
+                    <div class="two-column small-text">
+                        <div>
+                            <p><strong>SOC 2 Type II</strong></p>
+                            <ul>
+                                <li class="check">✅ Encryption at rest and in transit</li>
+                                <li class="check">✅ Access controls and audit logging</li>
+                                <li class="check">✅ Change management via approval workflows</li>
+                                <li class="check">✅ Monitoring and alerting</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p><strong>HIPAA Ready</strong></p>
+                            <ul>
+                                <li class="check">✅ BAA-eligible AWS services</li>
+                                <li class="check">✅ Data encryption</li>
+                                <li class="check">✅ Access logging</li>
+                                <li class="check">✅ Network isolation</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="small-text">
+                        <p><strong>GDPR</strong></p>
+                        <ul>
+                            <li class="check">✅ Data encryption</li>
+                            <li class="check">✅ Data retention policies</li>
+                            <li class="check">✅ Right to deletion (S3 lifecycle)</li>
+                            <li class="check">✅ Audit trail</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Audit Trail</h3>
+                    <div class="small-text" style="text-align: left;">
+                        <p><strong>Complete Logging Strategy:</strong></p>
+                        <ul>
+                            <li><strong>CloudWatch Logs</strong>
+                                <ul>
+                                    <li>/aws/sagemaker/TrainingJobs - Training execution logs</li>
+                                    <li>/aws/sagemaker/Endpoints - Inference logs</li>
+                                    <li>/aws/mlops/secure-pipeline - Model downloads, ECR ops, approvals</li>
+                                    <li>/aws/ecr/vulnerability-scans - Scan results</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <p><strong>Retention Policy</strong>: 90 days (configurable)</p>
+                        <p><strong>Log Analysis</strong>: CloudWatch Insights, automated alerts, SIEM integration</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Model Cards & Documentation</h3>
+                    <pre><code class="yaml" data-trim>
+Model Information:
+  Name: secure-llm-v1.0
+  Version: 1
+  Base Model: meta-llama/Llama-2-7b-hf
+  Fine-tuning Date: 2025-11-11
+
+Performance Metrics:
+  Perplexity: 15.2
+  Eval Loss: 1.23
+  Training Samples: 10,000
+
+Intended Use:
+  - Customer support automation
+  - Content generation
+
+Limitations:
+  - May produce biased outputs
+  - Not suitable for medical advice
+                    </code></pre>
+                </section>
+            </section>
+
+            <!-- 7. Monitoring & Observability -->
+            <section>
+                <section>
+                    <h2>7. Monitoring & Observability</h2>
+                </section>
+
+                <section>
+                    <h3>Multi-Layer Monitoring</h3>
+                    <div class="small-text">
+                        <ul>
+                            <li><strong>Infrastructure Monitoring</strong>
+                                <ul>
+                                    <li>CloudWatch Metrics for SageMaker</li>
+                                    <li>VPC Flow Logs</li>
+                                    <li>GuardDuty for threat detection</li>
+                                </ul>
+                            </li>
+                            <li><strong>Application Monitoring</strong>
+                                <ul>
+                                    <li>Training job metrics (loss, accuracy)</li>
+                                    <li>Endpoint latency and throughput</li>
+                                    <li>Error rates and exceptions</li>
+                                </ul>
+                            </li>
+                            <li><strong>Security Monitoring</strong>
+                                <ul>
+                                    <li>ECR scan results</li>
+                                    <li>IAM access patterns (CloudTrail)</li>
+                                    <li>KMS key usage</li>
+                                </ul>
+                            </li>
+                            <li><strong>Model Monitoring</strong>
+                                <ul>
+                                    <li>Data quality, model quality, bias drift, feature drift</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>SageMaker Model Monitor</h3>
+                    <pre><code class="python" data-trim>
+data_capture_config = DataCaptureConfig(
+    enable_capture=True,
+    sampling_percentage=100,
+    destination_s3_uri=f's3://{bucket}/monitoring/',
+    kms_key_id=kms_key_id,
+    capture_options=['Input', 'Output']
+)
+
+# Schedule monitoring
+monitor = DataQualityMonitor(
+    role=role,
+    instance_count=1,
+    instance_type='ml.m5.xlarge'
+)
+
+monitor.create_monitoring_schedule(
+    monitor_schedule_name='data-quality-monitor',
+    endpoint_input=endpoint_name,
+    schedule_cron_expression='cron(0 * * * ? *)'  # Hourly
+)
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h3>Alerting & Incident Response</h3>
+                    <div class="small-text">
+                        <p><strong>CloudWatch Alarms:</strong></p>
+                        <ul>
+                            <li>ModelInvocationErrors &gt; 10/min</li>
+                            <li>ModelLatency &gt; 1000ms (p99)</li>
+                            <li>CriticalVulnerabilitiesFound &gt; 0</li>
+                            <li>UnauthorizedAccessAttempts &gt; 5</li>
+                            <li>ModelDriftDetected == True</li>
+                        </ul>
+                        <p><strong>Incident Response Workflow:</strong></p>
+                        <ol>
+                            <li>Alert triggered → SNS notification</li>
+                            <li>On-call engineer paged</li>
+                            <li>Runbook executed</li>
+                            <li>Endpoint rolled back if needed</li>
+                            <li>Root cause analysis and lessons learned</li>
+                        </ol>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 8. Best Practices & Lessons Learned -->
+            <section>
+                <section>
+                    <h2>8. Best Practices & Lessons Learned</h2>
+                </section>
+
+                <section>
+                    <h3>Security Best Practices</h3>
+                    <ul class="small-text">
+                        <li><strong>1. Defense in Depth</strong>
+                            <ul>
+                                <li>Multiple layers of security controls</li>
+                                <li>No single point of failure</li>
+                                <li>Assume breach mentality</li>
+                            </ul>
+                        </li>
+                        <li><strong>2. Least Privilege</strong>
+                            <ul>
+                                <li>Minimal IAM permissions</li>
+                                <li>Service-specific roles</li>
+                            </ul>
+                        </li>
+                        <li><strong>3. Encryption Everywhere</strong>
+                            <ul>
+                                <li>At rest: S3, EBS, ECR</li>
+                                <li>In transit: TLS 1.2+</li>
+                                <li>Key rotation every 90 days</li>
+                            </ul>
+                        </li>
+                        <li><strong>4. Automated Security</strong></li>
+                        <li><strong>5. Continuous Monitoring</strong></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>MLOps Best Practices</h3>
+                    <ul class="small-text">
+                        <li><strong>1. Experiment Tracking</strong>
+                            <ul>
+                                <li>Every training run tracked</li>
+                                <li>Reproducible experiments</li>
+                                <li>Version control for code and data</li>
+                            </ul>
+                        </li>
+                        <li><strong>2. Model Versioning</strong>
+                            <ul>
+                                <li>Semantic versioning</li>
+                                <li>Immutable model artifacts</li>
+                            </ul>
+                        </li>
+                        <li><strong>3. Quality Gates</strong>
+                            <ul>
+                                <li>Automated performance validation</li>
+                                <li>No manual bypasses</li>
+                            </ul>
+                        </li>
+                        <li><strong>4. Infrastructure as Code</strong></li>
+                        <li><strong>5. Separation of Environments</strong>
+                            <ul>
+                                <li>Dev → Staging → Production</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Cost Optimization</h3>
+                    <div class="small-text">
+                        <p><strong>Security doesn't have to be expensive:</strong></p>
+                        <ul>
+                            <li class="check">✅ <strong>Spot Instances</strong> for training (70% cost savings)</li>
+                            <li class="check">✅ <strong>S3 Intelligent Tiering</strong> - Automatic cost optimization</li>
+                            <li class="check">✅ <strong>Right-sized instances</strong> - Start small, scale as needed</li>
+                            <li class="check">✅ <strong>VPC Endpoints</strong> instead of NAT Gateway</li>
+                        </ul>
+                        <div class="highlight-box">
+                            <strong>Estimated Monthly Costs</strong> (for demo):
+                            <ul>
+                                <li>Training (spot): ~$50-100/month</li>
+                                <li>Inference: ~$200-300/month (ml.g5.xlarge)</li>
+                                <li>Storage: ~$10-20/month</li>
+                                <li><strong>Total: ~$260-420/month</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Common Pitfalls & Solutions</h3>
+                    <div class="small-text">
+                        <table>
+                            <tr>
+                                <td><strong>Pitfall 1</strong></td>
+                                <td>Overly Complex Security</td>
+                                <td>✅ Automate security checks in CI/CD</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pitfall 2</strong></td>
+                                <td>Hardcoded Credentials</td>
+                                <td>✅ AWS Secrets Manager + IAM roles</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pitfall 3</strong></td>
+                                <td>No Model Validation</td>
+                                <td>✅ Automated threshold checks + approval</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pitfall 4</strong></td>
+                                <td>Ignoring Vulnerability Scans</td>
+                                <td>✅ Block deployment if critical vulns found</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pitfall 5</strong></td>
+                                <td>No Monitoring</td>
+                                <td>✅ Comprehensive monitoring from day 1</td>
+                            </tr>
+                        </table>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 9. Future Enhancements -->
+            <section>
+                <section>
+                    <h2>9. Future Enhancements</h2>
+                </section>
+
+                <section>
+                    <h3>Roadmap</h3>
+                    <div class="small-text">
+                        <p><strong>Phase 1: Current Implementation</strong> ✅</p>
+                        <ul>
+                            <li>Secure pipeline end-to-end</li>
+                            <li>Basic monitoring</li>
+                            <li>Manual approval</li>
+                        </ul>
+                        <p><strong>Phase 2: Advanced Security</strong> (Q1 2026)</p>
+                        <ul>
+                            <li>Image signing with AWS Signer</li>
+                            <li>Runtime security with Falco</li>
+                            <li>Secrets rotation automation</li>
+                        </ul>
+                        <p><strong>Phase 3: ML Security</strong> (Q2 2026)</p>
+                        <ul>
+                            <li>Adversarial robustness testing</li>
+                            <li>Explainability integration</li>
+                            <li>Privacy-preserving ML</li>
+                        </ul>
+                        <p><strong>Phase 4: Automation</strong> (Q3 2026)</p>
+                        <ul>
+                            <li>Fully automated approval</li>
+                            <li>Self-healing infrastructure</li>
+                            <li>Continuous training pipeline</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Compliance Checklist</h3>
+                    <div class="small-text two-column">
+                        <div>
+                            <ul>
+                                <li class="check">✅ Data encryption at rest</li>
+                                <li class="check">✅ Data encryption in transit</li>
+                                <li class="check">✅ Access controls (IAM)</li>
+                                <li class="check">✅ Audit logging (CloudWatch)</li>
+                                <li class="check">✅ Network isolation (VPC)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <ul>
+                                <li class="check">✅ Vulnerability scanning</li>
+                                <li class="check">✅ Change management</li>
+                                <li class="check">✅ Incident response plan</li>
+                                <li class="check">✅ Data retention policy</li>
+                                <li class="check">✅ Access review process</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Q&A -->
+            <section>
+                <h2>Questions?</h2>
+                <h3>Thank you!</h3>
+                <p style="margin-top: 50px; font-size: 0.8em;">
+                    Secure MLOps Pipeline for LLM Fine-Tuning<br>
+                    Security Engineering & Operations in Production ML
+                </p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/zoom/zoom.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'slide',
+            backgroundTransition: 'fade',
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom],
+            width: 1280,
+            height: 720,
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0
+        });
+    </script>
+</body>
+</html>
