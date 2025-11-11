@@ -1,0 +1,50 @@
+# Training Configuration
+model:
+  base_model: "meta-llama/Llama-2-7b-hf"  # Example model
+  model_type: "causal_lm"
+
+training:
+  instance_type: "ml.g5.2xlarge"
+  instance_count: 1
+  max_run: 86400  # 24 hours
+  use_spot_instances: true
+  max_wait: 90000
+
+  hyperparameters:
+    epochs: 3
+    per_device_train_batch_size: 4
+    per_device_eval_batch_size: 4
+    gradient_accumulation_steps: 4
+    learning_rate: 2.0e-5
+    warmup_steps: 100
+    logging_steps: 10
+    save_steps: 500
+    eval_steps: 500
+    max_seq_length: 512
+
+  lora_config:
+    r: 16
+    lora_alpha: 32
+    target_modules: ["q_proj", "v_proj", "k_proj", "o_proj"]
+    lora_dropout: 0.05
+    bias: "none"
+    task_type: "CAUSAL_LM"
+
+data:
+  s3_input_path: "s3://YOUR-BUCKET/data/train/"
+  s3_validation_path: "s3://YOUR-BUCKET/data/validation/"
+  s3_output_path: "s3://YOUR-BUCKET/models/"
+
+evaluation:
+  metrics:
+    - "perplexity"
+    - "loss"
+    - "accuracy"
+  performance_threshold:
+    perplexity_max: 20.0
+    loss_max: 1.5
+    accuracy_min: 0.75
+
+experiment:
+  experiment_name: "secure-llm-finetuning"
+  trial_name_prefix: "trial"

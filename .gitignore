@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+venv/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# Model files
+models/
+*.pth
+*.pt
+*.bin
+*.safetensors
+model.tar.gz
+*.onnx
+
+# Data
+data/
+*.csv
+*.json
+*.parquet
+cache/
+
+# AWS
+.aws/
+*.pem
+
+# Secrets
+.env
+*.key
+*.secret
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.bak
+.ecr_image_uri
+trained_model/
+
+# Docker
+.dockerignore
+
+# SageMaker
+.sagemaker/
+output/
+checkpoints/

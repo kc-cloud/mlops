@@ -1,0 +1,44 @@
+# Security Configuration for MLOps Pipeline
+security:
+  # Encryption settings
+  encryption:
+    s3_kms_key_id: "alias/sagemaker-kms-key"
+    volume_kms_key_id: "alias/sagemaker-volume-kms-key"
+    enable_network_isolation: true
+
+  # VPC Configuration
+  vpc:
+    security_group_ids:
+      - "sg-xxxxxxxxxxxxxxxxx"  # Replace with your security group
+    subnets:
+      - "subnet-xxxxxxxxxxxxxxxxx"  # Replace with your subnets
+      - "subnet-yyyyyyyyyyyyyyyyy"
+
+  # IAM Configuration
+  iam:
+    execution_role: "arn:aws:iam::ACCOUNT_ID:role/SageMakerSecureExecutionRole"
+
+  # ECR Configuration
+  ecr:
+    scan_on_push: true
+    image_tag_mutability: "IMMUTABLE"
+    encryption_type: "KMS"
+
+  # Model Registry
+  model_registry:
+    approval_required: true
+    enable_model_card: true
+
+  # Container Security
+  container:
+    run_as_non_root: true
+    read_only_root_filesystem: false
+    drop_capabilities: ["ALL"]
+
+# Compliance and Monitoring
+compliance:
+  enable_model_monitoring: true
+  enable_data_quality_monitoring: true
+  enable_model_bias_monitoring: true
+  enable_model_explainability: true
+  log_retention_days: 90
