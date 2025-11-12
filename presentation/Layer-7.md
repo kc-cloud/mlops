@@ -1,4 +1,8 @@
-## Layer 7: GenAI RAG Application Security - Key Controls
+## Layer 7: GenAI RAG Application Security
+
+### Threat: Prompt injection, PII/PHI leakage, jailbreaking, model abuse, data exfiltration
+
+### Key Security Controls
 
 1. **Frontend Security**: Enforce HTTPS/TLS 1.2+, implement CSP headers, sanitize all inputs, use secure session management (HttpOnly, Secure cookies), and mask PII/PHI in UI displays
 
